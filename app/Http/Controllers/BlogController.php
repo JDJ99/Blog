@@ -14,11 +14,14 @@ class BlogController extends Controller
      */
     public function index()
     {
-        //
-        $blogs = Blog::all();
-        return view('blogs.index', compact('blogs'));
-    }
 
+        $blogs = Blog::all();
+        $countPost = Blog::where('user_id', Auth::id())->count();
+    
+        
+        return view('blogs.index', compact('blogs', 'countPost'));
+    }
+    
     /**
      * Show the form for creating a new resource.
      */
@@ -37,8 +40,9 @@ class BlogController extends Controller
             'title' => 'required',
             'description' => 'required',
             'content' => 'required',
+            'category' => 'required||in :Advice,News,Questions',
             'author' => 'required',
-
+            'user_id' => 'required',
         ]);
 
         Blog::create($data);
@@ -95,6 +99,14 @@ class BlogController extends Controller
         $blog->delete();
 
         return back();
+    }
+    public function changeStatus(Request $request)
+    {
+        $blog = Blog::find($request->id);
+        $blog->status = $request->status;
+        $blog->save();
+
+        return response()->json(['success'=>'Status changed successfully.']);
     }
 
     public function search(){

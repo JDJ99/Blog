@@ -15,7 +15,20 @@ class Blog extends Model
     "description",
     "content",
     "author",
+    "category",
+    "user_id",
+    "status",
     "created_at",
     "updated_at"];
 
+    public function user()
+    {
+        return $this->belongsTo(User::class,'user_id');
+    }
+
+    public function tag()
+    {
+        return $this->belongsToMany(Tag::class, 'blogs_tags');
+    }
 }
+

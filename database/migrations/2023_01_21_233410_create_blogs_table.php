@@ -19,6 +19,9 @@ return new class extends Migration
             $table->string("title");
             $table->text("description");
             $table->text("content");
+            $table->string("category");
+            $table->foreignId('user_id')->nullable();
+            $table->boolean('status')->default(1);
             $table->timestamp("updated_at")->nullable();
             $table->timestamp('created_at')->nullable();
 
