@@ -51,11 +51,15 @@
                                         @csrf
                                         @method('delete')
                                         <button type="submit" class="btn btn-sm btn-primary">Delete</button>
-                                    </form>
-                                    <label class="switch">
-                                        <input type="checkbox" class="blog-status" data-blog-id="{{ $blog->id }}" {{ $blog->status ? 'checked' : '' }}>
-                                        <span class="slider"></span>
-                                    </label>
+                                        @if(Auth::check())
+                                            @if(Auth::user()->admins == '1' || (Auth::user()->id == $blog->user_id && $countPost >= 3))
+                                                <label class="switch">
+                                                    <input type="checkbox" class="blog-status" data-blog-id="{{ $blog->id }}" {{ $blog->status ? 'checked' : '' }}>
+                                                    <span class="slider"></span>
+                                                </label>
+                                            @endif
+                                        @endif
+
                                 @endif
                             @endauth
                         </td>
@@ -88,8 +92,7 @@
                     }
                 });
             }
-
-            // Attach changeBlogStatus to all checkboxes with the 'blog-status' class
+            
             $(document).on('change', '.blog-status', function() {
                 let id = $(this).data('blog-id');
                 changeBlogStatus(this, id);

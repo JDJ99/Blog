@@ -17,27 +17,26 @@ class BlogController extends Controller
      public function index()
     {
         $user = Auth::user();
-        
+        $countPost = 0; 
+
         if ($user) {
-            // User is logged in
+            //admin
             if ($user->admins == '1') {
-                // Admin can view all blogs
                 $blogs = Blog::all();
             } else {
-                // Regular user sees their own blogs and public blogs
+                //user
                 $blogs = Blog::where('user_id', $user->id)
                     ->orWhere('status', 1)
                     ->get();
+                $countPost = Blog::where('user_id', $user->id)->count(); 
             }
-            $countPost = $blogs->count();
         } else {
-            // Non-logged-in user can view all public blogs
+            //no account
             $blogs = Blog::where('status', 1)->get();
-            $countPost = $blogs->count();
         }
-
         return view('blogs.index', compact('blogs', 'countPost'));
     }
+
 
      
 
