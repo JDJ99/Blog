@@ -12,15 +12,37 @@ class BlogController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-
-        $blogs = Blog::all();
-        $countPost = Blog::where('user_id', Auth::id())->count();
     
+
+     public function index()
+    {
+        $user = Auth::user();
         
+        if ($user) {
+            // User is logged in
+            if ($user->admins == '1') {
+                // Admin can view all blogs
+                $blogs = Blog::all();
+            } else {
+                // Regular user sees their own blogs and public blogs
+                $blogs = Blog::where('user_id', $user->id)
+                    ->orWhere('status', 1)
+                    ->get();
+            }
+            $countPost = $blogs->count();
+        } else {
+            // Non-logged-in user can view all public blogs
+            $blogs = Blog::where('status', 1)->get();
+            $countPost = $blogs->count();
+        }
+
         return view('blogs.index', compact('blogs', 'countPost'));
     }
+
+     
+
+     
+
     
     /**
      * Show the form for creating a new resource.
@@ -100,24 +122,28 @@ class BlogController extends Controller
 
         return back();
     }
+    
     public function changeStatus(Request $request)
     {
-        $blog = Blog::find($request->id);
-        $blog->status = $request->status;
-        $blog->save();
+        try {
+            $blog = Blog::findOrFail($request->id);
+            $blog->status = $request->status;
+            $blog->save();
 
-        return response()->json(['success'=>'Status changed successfully.']);
+            return response()->json(['success' => 'Status changed successfully.']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     public function search(){
         $search_txt = $_GET['query'];
         $blogs = Blog::where('Title','LIKE', '%'.$search_txt. '%')
-            ->orWhere('author','LIKE', '%'.$search_txt. '%')->get();
+            ->get();
 
         return view('blogs.search', compact('blogs'));
 
     }
-
     public function filter(Request $request){
 
         $filter = $request->query('filter');

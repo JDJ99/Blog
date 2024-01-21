@@ -1,29 +1,32 @@
 @extends('layouts.app')
 
 @section('content')
-<div id="back-btn">
-    <button type="button" class="btn btn-sm btn-primary"><a class="text-white" href="{{route('blogs.index')}}"> Terug </a></button>
-    &nbsp;
-</div>
-<div class="container mt-5 mb-5" id="productPage">
+<div class="container mt-5 mb-5" id="blogPage">
     <div class="row">
-        <div class="col-md-5">
-            <div class="card">
-                <img src="https://bootstrap-ecommerce.com/bootstrap-ecommerce-html/images/items/1.jpg" class="figure-img img-fluid rounded">
+        <div class="col-md-7">
+            <div class="mb-3">
+                <h5>Title: {{$blog->title}}</h5>
+            </div>
 
+            <div class="mb-3">
+                <h6>Description: </h6>
+                <p class="text-muted">{{$blog->description}}</p>
+            </div>
+
+            <div class="mb-3">
+                <h6>Content: </h6>
+                <p>{{$blog->content}}</p>
+            </div>
+
+            <div class="mb-3">
+                <h6>Author: </h6>
+                <p class="description text-muted">{{$blog->author}}</p>
+            </div>
+
+            <div class="mb-3">
+                <a href="{{ route('blogs.index') }}" class="btn btn-sm btn-primary">Back</a>
             </div>
         </div>
-
-        <div class="col-md-7">
-            <h5>{{$blog->title}}</h5>
-            <p class="text-muted">{{$blog->description}} </p>
-
-            <h5 class="pt-4">{{$blog->content}}</h5>
-            <p class="description text-muted">{{$blog->author}}</p>
-        </div>
-
     </div>
 </div>
-
-
 @endsection

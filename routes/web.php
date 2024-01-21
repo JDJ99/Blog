@@ -17,9 +17,8 @@ use Illuminate\Support\Facades\Route;
 Route::resource('blogs', \App\Http\Controllers\BlogController::Class);
 
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [\App\Http\Controllers\BlogController::class, 'index']);
+
 
 Route::get('/dashboard', function () {
     return view('dashboard');
